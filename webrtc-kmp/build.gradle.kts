@@ -163,10 +163,20 @@ android {
     }
 }
 
-mavenPublishing {
-    publishToMavenCentral()
-    signAllPublications()
+publishing {
+    repositories {
+        maven {
+            name = "githubPackages"
+            url = uri(
+                "https://maven.pkg.github.com/" +
+                    (System.getenv("GITHUB_REPOSITORY") ?: project.findProperty("githubPackagesRepo") as String? ?: "IanDBird/webrtc-kmp")
+            )
+            credentials(org.gradle.api.artifacts.repositories.PasswordCredentials::class)
+        }
+    }
+}
 
+mavenPublishing {
     coordinates(project.group.toString(), project.name, "${project.version}")
 
     pom {
